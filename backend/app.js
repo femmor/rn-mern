@@ -2,6 +2,7 @@ const express = require("express")
 const app = express();
 const morgan = require("morgan")
 const mongoose = require('mongoose')
+const Product = require('./models/product')
 const PORT = 5000
 
 // Middleware
@@ -26,6 +27,24 @@ app.get(`${api}/products`, (req, res) => {
   res.send(product)
 })
 
+// Post Products
+app.post(`${api}/products`, (req, res) => {
+  const product = new Product({
+    name: req.body.name,
+    productImg: req.body.productImg,
+    countInStock: req.body.countInStock
+  })
+
+  product.save()
+  .then(createdProduct => {
+    res.status(201).json(createdProduct)
+  })
+  .catch(err => {
+    res.status(500).json({ error: err, success: false })
+  })
+})
+
+// Connect to DB
 mongoose.connect(process.env.CONNECTION_STRING, {
   useNewUrlParser: true,
   useUnifiedTopology: true
@@ -35,13 +54,7 @@ mongoose.connect(process.env.CONNECTION_STRING, {
 })
 .catch(err => console.log(err))
 
-// Post Products
-app.post(`${api}/products`, (req, res) => {
-  const newProduct = req.body
-  console.log(newProduct)
-  res.send(newProduct)
-})
-
+// Run app
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`)
 })
