@@ -1,6 +1,7 @@
 const express = require("express")
 const app = express();
 const morgan = require("morgan")
+const mongoose = require('mongoose')
 const PORT = 5000
 
 // Middleware
@@ -24,6 +25,15 @@ app.get(`${api}/products`, (req, res) => {
   }
   res.send(product)
 })
+
+mongoose.connect(process.env.CONNECTION_STRING, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true
+})
+.then(() => {
+  console.log('Database connected!')
+})
+.catch(err => console.log(err))
 
 // Post Products
 app.post(`${api}/products`, (req, res) => {
