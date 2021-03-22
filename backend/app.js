@@ -4,7 +4,10 @@ const bodyParser = require("body-parser")
 const PORT = 5000
 
 // Middleware
-app.use(bodyParser.json())
+app.use(express.urlencoded({
+  extended: true
+}))
+app.use(express.json())
 
 require('dotenv/config')
 const api = process.env.API_URL
@@ -20,7 +23,7 @@ app.get(`${api}/products`, (req, res) => {
 })
 
 // Post Products
-app.get(`${api}/products`, (req, res) => {
+app.post(`${api}/products`, (req, res) => {
   const newProduct = req.body
   console.log(newProduct)
   res.send(newProduct)
