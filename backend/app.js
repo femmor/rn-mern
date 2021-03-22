@@ -1,13 +1,16 @@
 const express = require("express")
 const app = express();
-const bodyParser = require("body-parser")
+const morgan = require("morgan")
 const PORT = 5000
 
 // Middleware
 app.use(express.urlencoded({
   extended: true
 }))
+
 app.use(express.json())
+
+app.use(morgan('tiny'))
 
 require('dotenv/config')
 const api = process.env.API_URL
