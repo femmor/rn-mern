@@ -18,13 +18,10 @@ require('dotenv/config')
 const api = process.env.API_URL
 
 // Get Products
-app.get(`${api}/products`, (req, res) => {
-  const product = {
-    id: 1,
-    name: "hair dressing gum",
-    image: "some_url",
-  }
-  res.send(product)
+app.get(`${api}/products`, async (req, res) => {
+  const productList = await Product.find({})
+  .then()
+  res.send(productList)
 })
 
 // Post Products
