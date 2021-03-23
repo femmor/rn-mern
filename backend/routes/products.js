@@ -6,7 +6,7 @@ const Product = require('../models/product')
 
 // Get Products
 router.get(`/`, async (req, res) => {
-  const productList = await Product.find({})
+  const productList = await Product.find({}).populate('category')
   // Get Specific fields only
   // const productList = await Product.find({}).select('name image -_id')
   res.send(productList)
@@ -47,7 +47,7 @@ router.post(`/`, async (req, res) => {
 
 // GET Single Product by ID
 router.get('/:id', async (req, res) => {
-  let product = await Product.findById(req.params.id)
+  let product = await Product.findById(req.params.id).populate('category')
 
   if (!product) {
     return res.status(500).send({ message: "Product could not be found" })
