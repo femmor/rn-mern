@@ -4,6 +4,7 @@ const router = express.Router()
 const Category = require('../models/category')
 const Product = require('../models/product')
 
+
 // Get Products
 router.get(`/`, async (req, res) => {
   const productList = await Product.find({}).populate('category')
@@ -11,6 +12,18 @@ router.get(`/`, async (req, res) => {
   // const productList = await Product.find({}).select('name image -_id')
   res.send(productList)
 })
+
+
+// GET Single Product by ID
+router.get('/:id', async (req, res) => {
+  let product = await Product.findById(req.params.id).populate('category')
+
+  if (!product) {
+    return res.status(500).send({ message: "Product could not be found" })
+  }
+  res.send(product)
+})
+
 
 // Add Product
 router.post(`/`, async (req, res) => {
@@ -44,15 +57,28 @@ router.post(`/`, async (req, res) => {
   res.send(product)
 })
 
-
-// GET Single Product by ID
-router.get('/:id', async (req, res) => {
-  let product = await Product.findById(req.params.id).populate('category')
+// Update Product 
+router.put('/:id', async(req, res) => {
+  let product = await Product.findByIdAndUpdate(req.params.id, {
+    name: req.body.name,
+    description: req.body.description,
+    richDescription: req.body.richDescription,
+    image: req.body.image,
+    images: req.body.images,
+    brand: req.body.brand,
+    price: req.body.price,
+    category: req.body.category,
+    countInStock: req.body.countInStock,
+    rating: req.body.rating,
+    numReviews: req.body.numReviews,
+    isFeatured: req.body.isFeatured
+  })
 
   if (!product) {
-    return res.status(500).send({ message: "Product could not be found" })
+    return res.status(404).send({ success: false, message: `Product with id ${req.params.id} could not be found` })
   }
   res.send(product)
 })
+
 
 module.exports = router
