@@ -2,44 +2,37 @@ const express = require("express")
 const app = express();
 const morgan = require("morgan")
 const mongoose = require('mongoose')
-const Product = require('./models/product')
+const cors = require('cors')
+
 const PORT = 5000
 
 // Middleware
 app.use(express.urlencoded({
   extended: true
 }))
-
 app.use(express.json())
-
 app.use(morgan('tiny'))
 
+// Enable Cors
+app.use(cors())
+app.options('*', cors())
+
+// DotENV
 require('dotenv/config')
+
+// Routes
+const productsRoutes = require('./routes/products')
+const categoriesRoutes = require('./routes/categories')
+const usersRoutes = require('./routes/users')
+const ordersRoutes = require('./routes/orders')
+
 const api = process.env.API_URL
 
-// Get Products
-app.get(`${api}/products`, async (req, res) => {
-  const productList = await Product.find({})
-  .then()
-  res.send(productList)
-})
-
-// Post Products
-app.post(`${api}/products`, (req, res) => {
-  const product = new Product({
-    name: req.body.name,
-    productImg: req.body.productImg,
-    countInStock: req.body.countInStock
-  })
-
-  product.save()
-  .then(createdProduct => {
-    res.status(201).json(createdProduct)
-  })
-  .catch(err => {
-    res.status(500).json({ error: err, success: false })
-  })
-})
+// Route APIs
+app.use(`${api}/products`, productsRoutes)
+app.use(`${api}/categories`, categoriesRoutes)
+app.use(`${api}/users`, usersRoutes)
+app.use(`${api}/orders`, ordersRoutes)
 
 // Connect to DB
 mongoose.connect(process.env.CONNECTION_STRING, {
