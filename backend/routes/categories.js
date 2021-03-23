@@ -10,8 +10,19 @@ router.get('/', async (req, res) => {
   if(!categoriesList){
     res.status(500).json({ success: false })
   }
-  res.send(categoriesList)
+  res.status(200).send(categoriesList)
 })
+
+// Get Category byID
+router.get('/:id', async (req, res) => {
+  const category = await Category.findById(req.params.id)
+
+  if(!category) {
+    res.status(500).send({ success: false, message: `The category with the id ${req.params.id} can not be found` })
+  }
+  res.status(200).send(category)
+})
+
 
 // Create a category
 router.post('/', async(req, res) => {
@@ -43,7 +54,6 @@ router.delete("/:id", (req, res) => {
   .catch(err => {
     return res.status(400).json({ success: false, error: err })
   })
-  
 })
 
 module.exports = router
