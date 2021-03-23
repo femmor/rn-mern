@@ -7,7 +7,8 @@ const Product = require('../models/product')
 // Get Products
 router.get(`/`, async (req, res) => {
   const productList = await Product.find({})
-  .then()
+  // Get Specific fields only
+  // const productList = await Product.find({}).select('name image -_id')
   res.send(productList)
 })
 
@@ -39,6 +40,17 @@ router.post(`/`, async (req, res) => {
 
   if(!product) {
     return res.status(500).send({ message: "Product can not be created" })
+  }
+  res.send(product)
+})
+
+
+// GET Single Product by ID
+router.get('/:id', async (req, res) => {
+  let product = await Product.findById(req.params.id)
+
+  if (!product) {
+    return res.status(500).send({ message: "Product could not be found" })
   }
   res.send(product)
 })
