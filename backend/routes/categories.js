@@ -70,4 +70,15 @@ router.put('/:id', async(req, res) => {
   res.send(category)
 })
 
+
+// Get categories count for statistics
+router.get('/get/count', async (req, res) => {
+  const categoriesCount = await Category.countDocuments(count => count)
+
+  if (!categoriesCount) {
+    res.status(505).json({ success: false, message: 'Categories are empty' })
+  }
+  res.send({categoriesCount})
+})
+
 module.exports = router

@@ -108,4 +108,16 @@ router.delete('/:id', (req, res) => {
   })
 })
 
+
+// Get Product count for statistics
+router.get(`/get/count`, async (req, res) => {
+  const productCount = await Product.countDocuments(count => count)
+  if (!productCount) {
+    res.status(404).json({ success: false, message: 'No products' })
+  }
+
+  res.send({productCount})
+})
+
+
 module.exports = router
