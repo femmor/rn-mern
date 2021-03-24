@@ -143,4 +143,19 @@ router.get('/get/featured/:count', async (req, res) => {
   res.send(featured)
 })
 
+// Filter products by categories
+router.get('/', async (req, res) => {
+  let filter = {}
+
+  if (req.query.categories) {
+    filter = {category: req.query.categories.split(',')}
+  }
+  const productList = await Product.find(filter).populate('category')
+  
+  if(!productsList) {
+    res.status(500).json({ success: false, message: 'There are no products in the category' })
+  }
+  res.send(productList)
+})
+
 module.exports = router
