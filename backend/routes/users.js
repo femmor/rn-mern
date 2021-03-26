@@ -6,12 +6,12 @@ const User = require('../models/user')
 
 // Get all Users
 router.get('/', async (req, res) => {
-  const usersList = User.find({})
+  const users = await User.find({}).select('-passwordHash')
 
-  if (!usersList) {
+  if (!users) {
     res.status(500).json({ success: false })
   }
-  res.send(usersList)
+  res.send(users)
 })
 
 
@@ -37,6 +37,16 @@ router.post('/', async(req, res) => {
     return res.status(404).send('User can not be created!')
   }
   res.send(user)
+})
+
+// Get User byID
+router.get('/:id', async (req, res) => {
+  const user = await User.findById(req.params.id).select('-passwordHash')
+
+  if(!user) {
+    res.status(500).send({ success: false, message: `The user with the id ${req.params.id} can not be found` })
+  }
+  res.status(200).send(user)
 })
 
 module.exports = router
