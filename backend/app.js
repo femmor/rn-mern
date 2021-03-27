@@ -4,6 +4,7 @@ const morgan = require("morgan")
 const mongoose = require('mongoose')
 const cors = require('cors')
 const authJwt = require('./helpers/jwt')
+const errorHandler = require('./helpers/errorHandler')
 
 const PORT = 5000
 
@@ -15,7 +16,10 @@ app.use(express.json())
 app.use(morgan('tiny'))
 
 // User Authentication middleware
-// app.use(authJwt())
+app.use(authJwt())
+
+// Error Handling Middleware
+app.use(errorHandler)
 
 // Enable Cors
 app.use(cors())

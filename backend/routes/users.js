@@ -74,4 +74,29 @@ router.post("/login", async (req, res) => {
   
 })
 
+// Register User Endpoint
+router.post("/register", async (req, res) => {
+  let user = new User({
+
+    name: req.body.name,
+    email: req.body.email,
+    passwordHash: bcrypt.hashSync(req.body.password, 10),
+    phone: req.body.phone,
+    street: req.body.street,
+    isAdmin: req.body.isAdmin,
+    apartment: req.body.apartment,
+    city: req.body.city,
+    zip: req.body.zip,
+    country: req.body.country
+  })
+  
+  user = await user.save()
+
+  if(!user) {
+    return res.status(404).send('The user cannot be created')
+  }
+  res.send(user)
+  
+})
+
 module.exports = router
