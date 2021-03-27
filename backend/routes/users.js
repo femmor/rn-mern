@@ -63,7 +63,9 @@ router.post("/login", async (req, res) => {
 
   if(user && bcrypt.compareSync(password, user.passwordHash)){
     const token = jwt.sign({
-      userId: user.id
+      userId: user.id,
+      // Send extra user data to the frontend
+      isAdmin: user.isAdmin
     }, secret, {
       expiresIn: '1d'
     })

@@ -12,7 +12,7 @@ function authJwt(){
   }).unless({
     path: [
       // Specify HTTP methods allowed for the public
-      // User regular expression insteafd of multiple paths
+      // User regular expression instead of multiple paths
       {url: /\/api\/v1\/products(.*)/, methods: ['GET', 'OPTIONS']},
       {url: /\/api\/v1\/categories(.*)/, methods: ['GET', 'OPTIONS']},
       `${api}/users/login`,
