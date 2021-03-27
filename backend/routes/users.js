@@ -101,4 +101,14 @@ router.post("/register", async (req, res) => {
   
 })
 
+// Get users count for statistics
+router.get('/get/count', async (req, res) => {
+  const usersCount = await User.countDocuments(count => count)
+
+  if (!usersCount) {
+    res.status(505).json({ success: false, message: 'Users are empty' })
+  }
+  res.send({usersCount})
+})
+
 module.exports = router
