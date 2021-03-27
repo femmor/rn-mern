@@ -18,28 +18,28 @@ router.get('/', async (req, res) => {
 
 
 // Create a user
-router.post('/', async(req, res) => {
-  let user = new User({
+// router.post('/', async(req, res) => {
+//   let user = new User({
 
-    name: req.body.name,
-    email: req.body.email,
-    passwordHash: bcrypt.hashSync(req.body.password, 10),
-    phone: req.body.phone,
-    street: req.body.street,
-    isAdmin: req.body.isAdmin,
-    apartment: req.body.apartment,
-    city: req.body.city,
-    zip: req.body.zip,
-    country: req.body.country
-  })
+//     name: req.body.name,
+//     email: req.body.email,
+//     passwordHash: bcrypt.hashSync(req.body.password, 10),
+//     phone: req.body.phone,
+//     street: req.body.street,
+//     isAdmin: req.body.isAdmin,
+//     apartment: req.body.apartment,
+//     city: req.body.city,
+//     zip: req.body.zip,
+//     country: req.body.country
+//   })
   
-  user = await user.save()
+//   user = await user.save()
 
-  if(!user) {
-    return res.status(404).send('User can not be created!')
-  }
-  res.send(user)
-})
+//   if(!user) {
+//     return res.status(404).send('User can not be created!')
+//   }
+//   res.send(user)
+// })
 
 // Get User byID
 router.get('/:id', async (req, res) => {
@@ -109,6 +109,52 @@ router.get('/get/count', async (req, res) => {
     res.status(505).json({ success: false, message: 'Users are empty' })
   }
   res.send({usersCount})
+})
+
+// Update user
+router.put('/:id', async(req, res) => {
+  const userExist = await User.findById(req.params.id)
+  let newPassword
+  if (req.body.password) {
+    newPassword = bcrypt.hashSync(req.body.password, 10)
+  } else {
+    newPassword = userExist.passwordHash
+  }
+
+  const user = await User.findByIdAndUpdate(req.params.id, {
+      name: req.body.name,
+      email: req.body.email,
+      passwordHash: newPassword,
+      phone: req.body.phone,
+      street: req.body.street,
+      isAdmin: req.body.isAdmin,
+      apartment: req.body.apartment,
+      city: req.body.city,
+      zip: req.body.zip,
+      country: req.body.country
+    }, {new: true}
+  )
+
+  if(!user)
+  return res.status(400).send('The user cannot be updated')
+
+  res.send(user)
+})
+
+
+// Delete a user
+router.delete("/:id", (req, res) => {
+  User.findByIdAndRemove(req.params.id)
+  .then(user => {
+    if(user) {
+      return res.status(200).json({ success: true, message: 'User deleted' })
+    } else {
+      return res.status(404).json({ success: false, message: 'User not found' })
+    }
+  })
+  .catch(err => {
+    return res.status(400).json({ success: false, error: err })
+  })
 })
 
 module.exports = router
